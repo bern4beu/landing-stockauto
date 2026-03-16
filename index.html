@@ -178,13 +178,13 @@
         <div style="background: #111; padding: 0.6rem 1rem; border-bottom: 1px solid #1a1a1a;">
           <span style="font-size: 0.75rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase;">Dashboard</span>
         </div>
-        <img src="img/dashboard.png" alt="Dashboard del sistema" style="width: 100%; display: block;">
+        <img src="img/dashboard.png" alt="Dashboard del sistema" class="captura-img" style="width: 100%; display: block;">
       </div>
       <div style="border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a;">
         <div style="background: #111; padding: 0.6rem 1rem; border-bottom: 1px solid #1a1a1a;">
           <span style="font-size: 0.75rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase;">Registro de venta</span>
         </div>
-        <img src="img/venta.png" alt="Formulario de venta" style="width: 100%; display: block;">
+        <img src="img/venta.png" alt="Formulario de venta" class="captura-img" style="width: 100%; display: block;">
       </div>
     </div>
 
@@ -193,7 +193,7 @@
       <div style="background: #111; padding: 0.6rem 1rem; border-bottom: 1px solid #1a1a1a;">
         <span style="font-size: 0.75rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase;">Inventario de productos</span>
       </div>
-      <img src="img/productos.png" alt="Página de productos" style="width: 100%; display: block;">
+      <img src="img/productos.png" alt="Página de productos" class="captura-img" style="width: 100%; display: block;">
     </div>
 
     <!-- Fila 3: Reportes x2 -->
@@ -202,13 +202,13 @@
         <div style="background: #111; padding: 0.6rem 1rem; border-bottom: 1px solid #1a1a1a;">
           <span style="font-size: 0.75rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase;">Reportes — resumen</span>
         </div>
-        <img src="img/reportes1.png" alt="Reportes parte 1" style="width: 100%; display: block;">
+        <img src="img/reportes1.png" alt="Reportes parte 1" class="captura-img" style="width: 100%; display: block;">
       </div>
       <div style="border-radius: 12px; overflow: hidden; border: 1px solid #1a1a1a;">
         <div style="background: #111; padding: 0.6rem 1rem; border-bottom: 1px solid #1a1a1a;">
           <span style="font-size: 0.75rem; color: #888; letter-spacing: 0.08em; text-transform: uppercase;">Reportes — historial</span>
         </div>
-        <img src="img/reportes2.png" alt="Reportes parte 2" style="width: 100%; display: block;">
+        <img src="img/reportes2.png" alt="Reportes parte 2" class="captura-img" style="width: 100%; display: block;">
       </div>
     </div>
 
@@ -247,6 +247,25 @@
 <footer>
   AutoStock · Sistema de gestión para negocios de repuestos · Hecho en Argentina
 </footer>
+
+<script>
+document.querySelectorAll('.captura-img').forEach(img => {
+  img.style.cursor = 'zoom-in';
+  img.addEventListener('click', function() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:2rem;';
+    const imgGrande = document.createElement('img');
+    imgGrande.src = this.src;
+    imgGrande.style.cssText = 'max-width:95%;max-height:95vh;border-radius:8px;border:1px solid #333;';
+    overlay.appendChild(imgGrande);
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', () => document.body.removeChild(overlay));
+    document.addEventListener('keydown', function cerrar(e) {
+      if (e.key === 'Escape') { document.body.removeChild(overlay); document.removeEventListener('keydown', cerrar); }
+    });
+  });
+});
+</script>
 
 </body>
 </html>
