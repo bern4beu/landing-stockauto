@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockAuto — Sistema de gestión para repuestos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --negro: #0E0E0E;
+    --blanco: #F5F2EC;
+    --acento: #C8F04E;
+    --gris-texto: #888;
+    --fuente-titulo: 'Syne', sans-serif;
+    --fuente-cuerpo: 'DM Sans', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--negro); color: var(--blanco); font-family: var(--fuente-cuerpo); font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(14,14,14,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #1f1f1f; }
+  .logo { font-family: var(--fuente-titulo); font-weight: 800; font-size: 1.2rem; color: var(--acento); letter-spacing: -0.02em; }
+  .nav-cta { background: var(--acento); color: var(--negro); font-family: var(--fuente-cuerpo); font-weight: 500; font-size: 0.875rem; padding: 0.5rem 1.25rem; border-radius: 100px; text-decoration: none; cursor: pointer; border: none; }
+  .nav-cta:hover { opacity: 0.85; }
+  section { padding: 5rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 6rem; max-width: 100%; padding-left: 2rem; padding-right: 2rem; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(200,240,78,0.08) 0%, transparent 70%); pointer-events: none; }
+  .hero-eyebrow { font-family: var(--fuente-cuerpo); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--acento); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--acento); }
+  .hero h1 { font-family: var(--fuente-titulo); font-weight: 800; font-size: clamp(2.5rem, 6vw, 5.5rem); line-height: 1.0; letter-spacing: -0.03em; max-width: 900px; margin-bottom: 2rem; }
+  .hero h1 em { font-style: normal; color: var(--acento); }
+  .hero-desc { font-size: 1.1rem; color: var(--gris-texto); max-width: 520px; margin-bottom: 3rem; line-height: 1.8; }
+  .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+  .btn-primary { background: var(--acento); color: var(--negro); font-family: var(--fuente-cuerpo); font-weight: 500; font-size: 1rem; padding: 0.875rem 2rem; border-radius: 100px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: opacity 0.2s, transform 0.2s; cursor: pointer; border: none; }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-secondary { background: transparent; color: var(--blanco); font-family: var(--fuente-cuerpo); font-size: 0.95rem; padding: 0.875rem 2rem; border-radius: 100px; text-decoration: none; border: 1px solid #333; transition: border-color 0.2s; cursor: pointer; }
+  .btn-secondary:hover { border-color: #666; }
+  .stats-bar { margin-top: 5rem; padding-top: 3rem; border-top: 1px solid #1f1f1f; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 2rem; max-width: 1100px; margin-left: auto; margin-right: auto; padding-left: 2rem; padding-right: 2rem; }
+  .stat-num { font-family: var(--fuente-titulo); font-size: 2.5rem; font-weight: 800; color: var(--acento); line-height: 1; margin-bottom: 0.25rem; }
+  .stat-label { font-size: 0.875rem; color: var(--gris-texto); }
+  .seccion-titulo { font-family: var(--fuente-titulo); font-weight: 800; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 1rem; }
+  .seccion-sub { color: var(--gris-texto); font-size: 1rem; max-width: 480px; margin-bottom: 3rem; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5px; background: #1a1a1a; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; }
+  .feature-card { background: var(--negro); padding: 2rem; transition: background 0.2s; }
+  .feature-card:hover { background: #111; }
+  .feature-icon { width: 44px; height: 44px; background: #1a1a1a; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; font-size: 20px; }
+  .feature-titulo { font-family: var(--fuente-titulo); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--blanco); }
+  .feature-desc { font-size: 0.9rem; color: var(--gris-texto); line-height: 1.65; }
+  .problemas-section { background: #080808; padding: 5rem 0; }
+  .problemas-inner { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  .problema-list { display: flex; flex-direction: column; gap: 0; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; margin-top: 2.5rem; }
+  .problema-item { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #1a1a1a; }
+  .problema-item:last-child { border-bottom: none; }
+  .prob-antes { padding: 1.5rem 2rem; border-right: 1px solid #1a1a1a; display: flex; align-items: flex-start; gap: 0.75rem; }
+  .prob-despues { padding: 1.5rem 2rem; display: flex; align-items: flex-start; gap: 0.75rem; background: #0a0a0a; }
+  .prob-tag { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 100px; white-space: nowrap; margin-top: 2px; flex-shrink: 0; }
+  .tag-antes { background: #2a1a1a; color: #ff6b6b; }
+  .tag-despues { background: #1a2a1a; color: var(--acento); }
+  .prob-texto { font-size: 0.9rem; color: var(--gris-texto); line-height: 1.6; }
+  .pasos { display: flex; flex-direction: column; gap: 0; margin-top: 2.5rem; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; }
+  .paso { display: flex; align-items: flex-start; gap: 2rem; padding: 2rem; border-bottom: 1px solid #1a1a1a; transition: background 0.2s; }
+  .paso:last-child { border-bottom: none; }
+  .paso:hover { background: #0d0d0d; }
+  .paso-num { font-family: var(--fuente-titulo); font-size: 3rem; font-weight: 800; color: #1f1f1f; line-height: 1; min-width: 3rem; user-select: none; }
+  .paso-titulo { font-family: var(--fuente-titulo); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.4rem; color: var(--blanco); }
+  .paso-desc { font-size: 0.9rem; color: var(--gris-texto); line-height: 1.65; }
+  .sobre-mi { border-top: 1px solid #1a1a1a; }
+  .sobre-card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 16px; padding: 2.5rem; max-width: 680px; }
+  .sobre-nombre { font-family: var(--fuente-titulo); font-weight: 700; font-size: 1.3rem; margin-bottom: 0.5rem; }
+  .sobre-rol { font-size: 0.85rem; color: var(--acento); letter-spacing: 0.05em; margin-bottom: 1.25rem; text-transform: uppercase; font-weight: 500; }
+  .sobre-texto { font-size: 0.95rem; color: var(--gris-texto); line-height: 1.8; }
+  .cta-final { background: var(--acento); padding: 5rem 2rem; text-align: center; }
+  .cta-final h2 { font-family: var(--fuente-titulo); font-weight: 800; font-size: clamp(2rem, 5vw, 4rem); letter-spacing: -0.03em; color: var(--negro); line-height: 1.05; margin-bottom: 1.5rem; }
+  .cta-final p { color: rgba(14,14,14,0.7); font-size: 1rem; margin-bottom: 2.5rem; max-width: 440px; margin-left: auto; margin-right: auto; }
+  .btn-dark { background: var(--negro); color: var(--blanco); font-family: var(--fuente-cuerpo); font-weight: 500; font-size: 1rem; padding: 1rem 2.5rem; border-radius: 100px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.75rem; transition: opacity 0.2s; border: none; cursor: pointer; }
+  .btn-dark:hover { opacity: 0.85; }
+  footer { background: #080808; padding: 2rem; text-align: center; font-size: 0.8rem; color: #444; border-top: 1px solid #1a1a1a; }
+  @media (max-width: 640px) {
+    .problema-item { grid-template-columns: 1fr; }
+    .prob-antes { border-right: none; border-bottom: 1px solid #1a1a1a; }
+    .paso { gap: 1rem; }
+    .paso-num { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">StockAuto</div>
+  <button class="nav-cta" onclick="window.open('https://wa.me/549XXXXXXXXXX?text=Hola!%20Vi%20tu%20sistema%20y%20me%20interesa%20saber%20más', '_blank')">Hablar por WhatsApp</button>
+</nav>
+
+<div class="hero">
+  <div style="max-width:1100px;margin:0 auto;width:100%;">
+    <p class="hero-eyebrow">Sistema de gestión para repuestos</p>
+    <h1>Dejá el Excel.<br>Controlá tu negocio <em>de verdad.</em></h1>
+    <p class="hero-desc">Un sistema diseñado específicamente para negocios de autopartes. Stock en tiempo real, historial de ventas, reportes de ganancia y mucho más.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary" onclick="window.open('https://wa.me/549XXXXXXXXXX?text=Hola!%20Quiero%20ver%20una%20demo%20del%20sistema', '_blank')">
+        Ver demo gratis
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </button>
+      <a class="btn-secondary" href="#como-funciona">¿Cómo funciona?</a>
+    </div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Online, desde cualquier dispositivo</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">0</div>
+    <div class="stat-label">Instalaciones requeridas</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">Acceso permanente a tus datos</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">1 día</div>
+    <div class="stat-label">Para empezar a usarlo</div>
+  </div>
+</div>
+
+<div class="problemas-section">
+  <div class="problemas-inner">
+    <h2 class="seccion-titulo">¿Te suena familiar?</h2>
+    <p class="seccion-sub">Lo que se repite en los negocios de repuestos que siguen usando Excel o papel.</p>
+    <div class="problema-list">
+      <div class="problema-item">
+        <div class="prob-antes"><span class="prob-tag tag-antes">Antes</span><p class="prob-texto">No sabés con exactitud cuánto stock tenés hasta que lo contás físicamente.</p></div>
+        <div class="prob-despues"><span class="prob-tag tag-despues">Ahora</span><p class="prob-texto">El stock se actualiza solo con cada venta. Siempre sabés qué tenés.</p></div>
+      </div>
+      <div class="problema-item">
+        <div class="prob-antes"><span class="prob-tag tag-antes">Antes</span><p class="prob-texto">No sabés cuánto ganaste realmente este mes, solo cuánto vendiste.</p></div>
+        <div class="prob-despues"><span class="prob-tag tag-despues">Ahora</span><p class="prob-texto">Ves la ganancia real de cada mes, separada del total facturado.</p></div>
+      </div>
+      <div class="problema-item">
+        <div class="prob-antes"><span class="prob-tag tag-antes">Antes</span><p class="prob-texto">Si un empleado se va, se lleva el conocimiento del negocio.</p></div>
+        <div class="prob-despues"><span class="prob-tag tag-despues">Ahora</span><p class="prob-texto">Todo queda registrado. Podés ver qué hizo cada usuario y cuándo.</p></div>
+      </div>
+      <div class="problema-item">
+        <div class="prob-antes"><span class="prob-tag tag-antes">Antes</span><p class="prob-texto">Buscás un repuesto compatible con un auto y tardás minutos en encontrarlo.</p></div>
+        <div class="prob-despues"><span class="prob-tag tag-despues">Ahora</span><p class="prob-texto">Filtrás por marca, modelo y motor del vehículo en segundos.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <h2 class="seccion-titulo">Todo lo que necesitás,<br>nada de lo que no.</h2>
+  <p class="seccion-sub">Diseñado específicamente para repuestos. Sin funciones innecesarias que compliquen el día a día.</p>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">📦</div><div class="feature-titulo">Control de stock</div><div class="feature-desc">Stock en tiempo real con alertas automáticas cuando un producto está por agotarse.</div></div>
+    <div class="feature-card"><div class="feature-icon">🛒</div><div class="feature-titulo">Registro de ventas</div><div class="feature-desc">Cargá ventas con múltiples productos, asocialas a un cliente y generá el remito al instante.</div></div>
+    <div class="feature-card"><div class="feature-icon">📊</div><div class="feature-titulo">Reportes de ganancia</div><div class="feature-desc">Historial de los últimos 12 meses con facturación real y ganancia neta por período.</div></div>
+    <div class="feature-card"><div class="feature-icon">🚗</div><div class="feature-titulo">Filtro por vehículo</div><div class="feature-desc">Encontrá al instante qué repuestos son compatibles con una marca, modelo y motor específico.</div></div>
+    <div class="feature-card"><div class="feature-icon">👥</div><div class="feature-titulo">Múltiples usuarios</div><div class="feature-desc">Creá usuarios con distintos permisos. Los vendedores operan, vos administrás.</div></div>
+    <div class="feature-card"><div class="feature-icon">📋</div><div class="feature-titulo">Historial completo</div><div class="feature-desc">Cada movimiento de stock queda registrado con fecha, usuario y motivo.</div></div>
+  </div>
+</section>
+
+<section id="como-funciona">
+  <h2 class="seccion-titulo">Empezar es simple.</h2>
+  <p class="seccion-sub">Sin instalaciones, sin complicaciones. En un día tu negocio ya está cargado.</p>
+  <div class="pasos">
+    <div class="paso"><div class="paso-num">01</div><div><div class="paso-titulo">Me contactás por WhatsApp</div><div class="paso-desc">Hablamos sobre tu negocio, cuántos productos tenés y cómo trabajás hoy. Sin compromiso.</div></div></div>
+    <div class="paso"><div class="paso-num">02</div><div><div class="paso-titulo">Te muestro el sistema en vivo</div><div class="paso-desc">Te doy acceso a una demo real para que lo pruebes antes de decidir.</div></div></div>
+    <div class="paso"><div class="paso-num">03</div><div><div class="paso-titulo">Lo configuramos juntos</div><div class="paso-desc">Cargo tus productos, creo los usuarios de tu equipo y te explico cómo usarlo. Todo incluido.</div></div></div>
+    <div class="paso"><div class="paso-num">04</div><div><div class="paso-titulo">Tu negocio empieza a funcionar</div><div class="paso-desc">Desde el primer día tenés control total. Y si algo falla, estoy disponible.</div></div></div>
+  </div>
+</section>
+
+<section class="sobre-mi">
+  <h2 class="seccion-titulo">Quién está detrás.</h2>
+  <div class="sobre-card">
+    <div class="sobre-nombre">Desarrolladora de software</div>
+    <div class="sobre-rol">Especializada en sistemas para negocios</div>
+    <p class="sobre-texto">Este sistema nació de una problemática real: un negocio de repuestos que manejaba todo en Excel y perdía tiempo y plata por no tener la información organizada. Lo construí para resolver eso, y lo fui mejorando con el feedback del negocio real.<br><br>No soy una empresa grande. Soy una persona que entiende el problema, desarrolló la solución, y está disponible cuando algo falla.</p>
+  </div>
+</section>
+
+<div class="cta-final">
+  <h2>¿Tu negocio sigue<br>en una planilla?</h2>
+  <p>Hablemos. Te muestro el sistema sin compromiso y vemos si te sirve.</p>
+  <button class="btn-dark" onclick="window.open('https://wa.me/549XXXXXXXXXX?text=Hola!%20Quiero%20ver%20el%20sistema%20de%20gestión%20para%20mi%20negocio%20de%20repuestos', '_blank')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Escribirme por WhatsApp
+  </button>
+</div>
+
+<footer>
+  StockAuto · Sistema de gestión para negocios de repuestos · Hecho en Argentina
+</footer>
+
+</body>
+</html>
